@@ -208,6 +208,23 @@ function isMouseInGrid() {
 }
 
 
+function touchStarted() {
+  if (!isMouseInGrid()) return false;
+  mousePressed(); // Reuse existing logic
+  return false; // Prevent default browser behavior (like scrolling)
+}
+
+function touchMoved() {
+  if (!isMouseInGrid()) return false;
+  mouseDragged(); // Reuse existing logic
+  return false;
+}
+
+function touchEnded() {
+  if (!isMouseInGrid()) return false;
+  mouseReleased(); // Reuse existing logic
+  return false;
+}
 
 
 
