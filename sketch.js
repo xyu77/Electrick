@@ -42,9 +42,9 @@ function setup() {
 
   // Create the grid
   i1 = 0;
-  for (let y = windowHeight / 6; y <= (windowHeight / 6) * 5; y += 10) {
+  for (let y = windowHeight / 10; y <= (windowHeight / 10) * 9; y += 10) {
     cols = 0;
-    for (let x = windowWidth / 6; x <= (windowWidth / 6) * 5; x += 10) {
+    for (let x = windowWidth / 10; x <= (windowWidth / 10) * 9; x += 10) {
       let a = new cmoGrid(i1, x, y, rows, cols);
       cmoGridList.push(a);
       i1++;
@@ -205,6 +205,7 @@ if (key === " ") {
 
 function isMouseInGrid() {
   return mouseX >= gridXMin && mouseX <= gridXMax && mouseY >= gridYMin && mouseY <= gridYMax;
+  
 }
 
 
@@ -225,7 +226,6 @@ function touchEnded() {
   mouseReleased(); // Reuse existing logic
   return false;
 }
-
 
 
 
