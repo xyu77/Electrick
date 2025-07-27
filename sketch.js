@@ -1,4 +1,4 @@
-/ ===== GLOBAL VARIABLES =====
+// ===== GLOBAL VARIABLES =====
 let wiggleSlider;
 let toggleButton;
 
@@ -34,20 +34,7 @@ let mousecircleradius = 30;
 let griddotradius = 1;
 let cmoRolloverDistance = 30;
 
-
-P5Capture.setDefaultOptions({
-  format: 'gif',
-  framerate: 30,
-  duration: 90 // 3 seconds at 30fps
-});
-
 // ======= SETUP & DRAW =======
-
-
-function startGifCapture() {
-  P5Capture.getInstance().start();
-}
-
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -83,7 +70,13 @@ toggleButton.style("font-weight", "bold");
   gridYMin = windowHeight / 6;
   gridYMax = (windowHeight / 6) * 5;
   
-
+  
+   capturer = new CCapture({
+    format: "gif",
+    workersPath: "./", // or a valid local folder
+    framerate: 30,
+    verbose: true,
+  });
 }
 
 function draw() {
@@ -258,7 +251,7 @@ function titletext() {
 
   textSize(10);
   text("CONNECT DOTS", windowWidth / 2, windowHeight - 60);
-  text("SPACEBAR TO HIDE GRID / PRESS  TO RECORD", windowWidth / 2, windowHeight - 50);
+  text("SPACEBAR TO HIDE GRID / PRESS ` TO RECORD", windowWidth / 2, windowHeight - 50);
 }
 
 
@@ -436,7 +429,7 @@ class DrawLine {
     // Find matching cmoGrid from cmoGridList
     for (let grid of cmoGridList) {
       if (grid.x === pt.x && grid.y === pt.y) {
-        print([ ${grid.col},${grid.row}]);
+        print(`[ ${grid.col},${grid.row}]`);
       //  break;
       }
     }
