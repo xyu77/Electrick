@@ -2,12 +2,6 @@
 let wiggleSlider;
 let toggleButton;
 
-let capturer;
-let recording = false;
-let recordStartFrame;
-let recordDuration = 90; // 3 seconds * 30 fps
-
-
 let showGrid = true;
 let currentlyDrawing = false;
 let cmoGridList = [];
@@ -34,25 +28,27 @@ let mousecircleradius = 30;
 let griddotradius = 1;
 let cmoRolloverDistance = 30;
 
-// ======= SETUP & DRAW =======
+P5Capture.setDefaultOptions({
+  format: 'gif',
+  framerate: 30,
+  duration: 90 // 3 seconds at 30fps
+});
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
   frameRate(30);
 
-  createUI(); // create slider + toggle
+  createUI();
 
   toggleButton.html("Light Mode 🌞");
-toggleButton.style("background-color", "#ffffff");
-toggleButton.style("color", "#000000");
-toggleButton.style("border", "1px solid #ccc");
-toggleButton.style("padding", "5px 10px");
-toggleButton.style("border-radius", "5px");
+  toggleButton.style("background-color", "#ffffff");
+  toggleButton.style("color", "#000000");
+  toggleButton.style("border", "1px solid #ccc");
+  toggleButton.style("padding", "5px 10px");
+  toggleButton.style("border-radius", "5px");
   toggleButton.style("transition", "all 0.3s ease");
-toggleButton.style("font-weight", "bold");
-  
-  
-  // create the grid
+  toggleButton.style("font-weight", "bold");
+
   i1 = 0;
   for (let y = windowHeight / 6; y <= (windowHeight / 6) * 5; y += 10) {
     cols = 0;
@@ -69,14 +65,6 @@ toggleButton.style("font-weight", "bold");
   gridXMax = (windowWidth / 6) * 5;
   gridYMin = windowHeight / 6;
   gridYMax = (windowHeight / 6) * 5;
-  
-  
-   capturer = new CCapture({
-    format: "gif",
-    workersPath: "./", // or a valid local folder
-    framerate: 30,
-    verbose: true,
-  });
 }
 
 function draw() {
@@ -97,34 +85,16 @@ function draw() {
   titletext();
   drawSliderLabel();
 
-
-
-  // Draw modal if visible
   if (showConfirmModal) {
     drawConfirmModal();
   }
-  
-if (recording) {
-  capturer.capture(document.querySelector("canvas"));
-
-  if (frameCount - recordStartFrame >= recordDuration) {
-    capturer.stop();
-    capturer.save();
-    recording = false;
-    console.log("Recording done!");
-  }
 }
-  
-}
-
-// ======= UI: SLIDER + BUTTONS =======
 
 function createUI() {
-  
   let gifButton = createButton("🎞️ Save 3s GIF");
-gifButton.position(20, 100);
-gifButton.mousePressed(startGifCapture);
-  
+  gifButton.position(20, 100);
+  gifButton.mousePressed(() => P5Capture.getInstance().start());
+
   wiggleSlider = createSlider(0, 15, 5, 0.1);
   wiggleSlider.position(20, 20);
   wiggleSlider.style('width', '200px');
@@ -132,11 +102,6 @@ gifButton.mousePressed(startGifCapture);
   toggleButton = createButton("Toggle mode");
   toggleButton.position(20, 60);
   toggleButton.mousePressed(toggleBackground);
-  
-  
-  
-  
-  
 }
 
 function drawSliderLabel() {
@@ -145,8 +110,6 @@ function drawSliderLabel() {
   textSize(12);
   text("Wiggle Amplitude: " + wiggleSlider.value(), 240, 25);
 }
-
-// ======= INPUT =======
 
 function mousePressed() {
   if (!isMouseInGrid()) return;
@@ -171,8 +134,6 @@ function mouseDragged() {
 }
 
 function mouseReleased() {
- // if (!isMouseInGrid()) return;
-
   for (let dot of cmoGridList) dot.cmoCheckCloseby();
 
   if (currentlyDrawing && cmoLineList.length > 0) {
@@ -183,16 +144,9 @@ function mouseReleased() {
 }
 
 function keyPressed() {
-if (key === " ") {
+  if (key === " ") {
     showConfirmModal = true;
     createModalButtons();
-  }
-
-  if (key === "r" && !recording) {
-    recording = true;
-    recordStartFrame = frameCount;
-    capturer.start();
-    console.log("Recording started");
   }
 
   if (keyCode === RETURN) {
@@ -206,8 +160,6 @@ if (key === " ") {
   }
 }
 
-// ======= UTILITY =======
-
 function drawMouseCircle() {
   fill("#FF0000");
   noStroke();
@@ -215,9 +167,7 @@ function drawMouseCircle() {
 }
 
 function toggleBackground() {
-   showGrid = !showGrid;
-
-  // Add bounce effect
+  showGrid = !showGrid;
   toggleButton.style("transform", "scale(1.1)");
   setTimeout(() => toggleButton.style("transform", "scale(1.0)"), 150);
 
@@ -248,11 +198,14 @@ function titletext() {
   textAlign(CENTER, CENTER);
   textSize(15);
   text("Electrick CM", windowWidth / 2, 50);
-
   textSize(10);
   text("CONNECT DOTS", windowWidth / 2, windowHeight - 60);
   text("SPACEBAR TO HIDE GRID / PRESS ` TO RECORD", windowWidth / 2, windowHeight - 50);
 }
+
+// Include your class definitions (cmoGrid, DrawLine) below as-is
+// Ensure CCapture references are removed
+// This script is now p5.capture compatible
 
 
 
